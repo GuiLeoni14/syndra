@@ -1,5 +1,12 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 require('dotenv').config();
+const { Configuration, OpenAIApi } = require('openai');
+
+const configuration = new Configuration({
+  organization: 'org-9Scd9V75SzzFVIW5zrwaXntt',
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
 
 const client = new Client({
   intents: [
@@ -15,7 +22,6 @@ client.on('ready', () => {
 });
 
 client.on('interactionCreate', async (interaction) => {
-  console.log(interaction);
   if (!interaction.isChatInputCommand()) return;
 
   if (interaction.commandName === 'ping') {
@@ -24,9 +30,17 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 client.on('messageCreate', async (msg) => {
-  console.log(msg);
-  if (msg.content === `oi`) {
-    msg.reply('vadia');
+  if (msg.content.includes('chat')) {
+    const response = await openai.createCompletion({
+      model: 'davinci',
+      prompt: msg.content, // define a mensagem recebida como entrada
+      max_tokens: 100, // define o tamanho máximo da resposta gerada
+      n: 1, // define quantas respostas gerar
+    });
+
+    // envia a resposta gerada de volta para o canal do Discord
+    const answer = response.data.choices[0].text.trim();
+    await msg.reply(answer || 'FUDEO');
   }
 });
 
