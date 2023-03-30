@@ -30,17 +30,18 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 client.on('messageCreate', async (msg) => {
-  if (msg.content.includes('chat')) {
-    const response = await openai.createCompletion({
-      model: 'davinci',
-      prompt: msg.content, // define a mensagem recebida como entrada
-      max_tokens: 100, // define o tamanho máximo da resposta gerada
-      n: 1, // define quantas respostas gerar
-    });
-
-    // envia a resposta gerada de volta para o canal do Discord
-    const answer = response.data.choices[0].text.trim();
-    await msg.reply(answer || 'FUDEO');
+  if (msg.content.author.username != "syndra"){   
+    if (msg.content.includes('chat')) {
+      const response = await openai.createCompletion({
+        model: 'text-davinci-003',
+        prompt: msg.content, // define a mensagem recebida como entrada
+        max_tokens: 100, // define o tamanho máximo da resposta gerada
+        n: 1, // define quantas respostas gerar
+      });
+      
+      const answer = response.data.choices[0].text.trim();
+      await msg.reply(answer || 'FUDEO'); 
+    }
   }
 });
 
