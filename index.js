@@ -32,17 +32,20 @@ client.on('interactionCreate', async (interaction) => {
 client.on('messageCreate', async (msg) => {
   if (msg.author.username.toLowerCase() !== 'syndra') {
     if (msg.content.includes('chat')) {
-      const response = await openai.createCompletion({
-        model: 'text-davinci-003',
-        prompt: msg.content, // define a mensagem recebida como entrada
-        max_tokens: 100, // define o tamanho máximo da resposta gerada
-        n: 1, // define quantas respostas gerar
-      });
-
-      const answer = response.data.choices[0].text.trim();
-      await msg.reply(answer || 'FUDEO');
+      try {
+        const response = await openai.createCompletion({
+          model: 'text-davinci-003',
+          prompt: msg.content,
+          max_tokens: 2000,
+          n: 1,
+        });
+        const answer = response.data.choices[0].text.trim();
+        await msg.reply(answer || 'FUDEO');
+      } catch (error) {
+        console.error('Ocorreu um erro:', error);
+        await msg.reply('Estou com erro bip bop');
+      }
     }
   }
 });
-
 client.login(process.env.DISCORD_SECRET);
