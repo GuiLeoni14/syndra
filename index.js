@@ -30,7 +30,7 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 client.on('messageCreate', async (msg) => {
-  if (msg.content.author.username != "syndra"){   
+  if (msg.author.username.toLowerCase() !== 'syndra') {
     if (msg.content.includes('chat')) {
       const response = await openai.createCompletion({
         model: 'text-davinci-003',
@@ -38,9 +38,9 @@ client.on('messageCreate', async (msg) => {
         max_tokens: 100, // define o tamanho máximo da resposta gerada
         n: 1, // define quantas respostas gerar
       });
-      
+
       const answer = response.data.choices[0].text.trim();
-      await msg.reply(answer || 'FUDEO'); 
+      await msg.reply(answer || 'FUDEO');
     }
   }
 });
