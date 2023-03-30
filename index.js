@@ -35,7 +35,7 @@ client.on('messageCreate', async (msg) => {
       const response = await openai.createCompletion({
         model: 'text-davinci-003',
         prompt: msg.content, // define a mensagem recebida como entrada
-        max_tokens: 100, // define o tamanho máximo da resposta gerada
+        max_tokens: 2000, // define o tamanho máximo da resposta gerada
         n: 1, // define quantas respostas gerar
       });
 
