@@ -1,19 +1,30 @@
+import { Player } from 'discord-player';
 import { Client, GatewayIntentBits, REST, Routes } from 'discord.js';
 import dotenv from 'dotenv';
-import { chat } from './src/commands/chat/commands.js';
-import { chatCommands } from './src/commands/chat/index.js';
-import { PREFIX } from './src/utils/prefix.js';
+import { chat } from './src/commands/chat/index.js';
+import { allCommands } from './src/commands/index.js';
 
 dotenv.config();
 
-const client = new Client({
+export const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.GuildIntegrations,
     GatewayIntentBits.GuildMembers,
   ],
+});
+
+export const player = new Player(client, {
+  leaveOnEnd: true,
+  leaveOnStop: true,
+  leaveOnEmpty: true,
+  leaveOnEmptyCooldown: 5000,
+  autoSelfDeaf: true,
+  initialVolume: 50,
+  bufferingTimeout: 3000,
 });
 
 client.on('ready', async () => {
@@ -68,13 +79,12 @@ client.on('messageCreate', async (msg) => {
 
   const command = msg.content.split(' ')[0];
   const question = msg.content.split(' ').slice(1).join(' ');
-  console.log(question);
-  switch (command) {
-    case `${PREFIX}chat`:
-      await msg.reply(await chatCommands('chat', question));
-      break;
-    default:
-      break;
+  console.log(command.split('$')[1], question);
+  try {
+    await allCommands(msg);
+  } catch (error) {
+    console.log('error', error);
+    msg.reply('Vixi docinho tive alguns probleminhas...');
   }
 });
 
